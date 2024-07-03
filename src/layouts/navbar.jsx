@@ -1,4 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { sampleProducts } from "@/pages/Index"; // Import sampleProducts array
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +23,7 @@ const Layout = () => {
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 justify-between">
         <DesktopNav />
         <MobileNav />
+        <SearchBar /> {/* Add SearchBar component */}
         <UserMenu />
       </header>
       <main className="flex-grow p-4 overflow-auto bg-gray-100">
@@ -107,5 +112,55 @@ const NavItem = ({ to, children, className }) => (
     {children}
   </NavLink>
 );
+
+const SearchBar = () => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    if (value) {
+      const filteredProducts = sampleProducts.filter((product) =>
+        product.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setResults(filteredProducts);
+    } else {
+      setResults([]);
+    }
+  };
+
+  const handleResultClick = (id) => {
+    navigate(`/product/${id}`);
+    setQuery("");
+    setResults([]);
+  };
+
+  return (
+    <div className="relative">
+      <Input
+        type="text"
+        placeholder="Search products..."
+        value={query}
+        onChange={handleSearch}
+        className="w-64"
+      />
+      {results.length > 0 && (
+        <div className="absolute left-0 right-0 mt-2 bg-white border rounded shadow-lg z-10">
+          {results.map((product) => (
+            <div
+              key={product.id}
+              className="p-2 cursor-pointer hover:bg-gray-200"
+              onClick={() => handleResultClick(product.id)}
+            >
+              {product.name}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Layout;

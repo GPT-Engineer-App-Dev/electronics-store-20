@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
-const sampleProducts = [
+export const sampleProducts = [
   {
     id: 1,
     name: "Smartphone",
